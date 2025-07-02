@@ -1,5 +1,5 @@
 //% weight=100 color=#0fbc11 icon="\uf1eb"
-namespace SMPC {
+namespace SMCP {
     export enum RadioMessage {
         ImHere = 59049,
         RUReal = 51673,
@@ -158,7 +158,6 @@ namespace SMPC {
     })
 
     //% blockId="init smcp" block="init smcp"
-    //% shim=smcp::init
     export function init() {
         LastConnection = 0
         Pic = []
@@ -252,7 +251,6 @@ namespace SMPC {
     }
 
     //% blockId="check connection" block="check connection"
-    //% shim=smcp::check
     export function check() {
         if (Connected == 1 && ComPry == 1) {
             radio.sendMessage(RadioMessage.StillThere)
@@ -268,7 +266,6 @@ namespace SMPC {
     }
 
     //% blockId="connect" block="connect"
-    //% shim=smcp::connect
     export function connect() {
         while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
