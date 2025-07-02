@@ -270,9 +270,9 @@ namespace SMCP {
             }
             basic.pause(500)
             if ((ConnectingStage == 4 && Started)) {
-                if (LastConnection + (disconnect !== undefined ? disconnect : 5000) < input.runningTime()) {
+                if (LastConnection + (isNaN(disconnect) ? 5000 : disconnect) < input.runningTime()) {
                     ConnectingAttReset()
-                } else if (LastConnection + beep < input.runningTime()) {
+                } else if (LastConnection + (isNaN(beep) ? 5000 : beep) < input.runningTime()) {
                     music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                 }
             }
@@ -283,8 +283,8 @@ namespace SMCP {
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry?:number) {
-        ReqPryVar = ReqPry
-        while (Connected == 0 && ConnectingStage == 0 && (ReqPry == 1 || ReqPry == -1)) {
+        ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
+        while (Connected == 0 && ConnectingStage == 0 && (ReqPryVar == 1 || ReqPryVar == -1)) {
             flashstorage.remove("Disconnected")
             radio.sendMessage(RadioMessage.AnyOneThere)
             basic.showLeds(`
