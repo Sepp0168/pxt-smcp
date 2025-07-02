@@ -105,8 +105,7 @@ namespace SMCP {
         }
     })
     radio.onReceivedMessage(RadioMessage.StillThere, function () {
-        Connected = 1
-        if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
+        if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber) && Connected == 1) {
             radio.sendMessage(RadioMessage.Yup)
             ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
             LastConnection = input.runningTime()
