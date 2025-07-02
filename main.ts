@@ -166,7 +166,7 @@ namespace SMCP {
     //% group.defl=1
     //% group.min=1 group.max=255
     //% AB.defl=true
-    export function init(group:number, AB:boolean) {
+    export function init(group?:number, AB?:boolean) {
         LastConnection = 0
         Pic = []
         MSG = []
@@ -263,7 +263,7 @@ namespace SMCP {
     //% beep.min=1000 beep.max=disconnect
     //% disconnect.defl=5000
     //% disconnect.min=beep disconnect.max=10000
-    export function check(beep:number, disconnect:number) {
+    export function check(beep?:number, disconnect?:number) {
         if (Connected == 1) {
             if (ComPry == 1) {
                 radio.sendMessage(RadioMessage.StillThere)
@@ -282,7 +282,7 @@ namespace SMCP {
     //% blockId="connect" block="connect to other microbit|| Communication priority for this device is $ReqPry"
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
-    export function connect(ReqPry:number) {
+    export function connect(ReqPry?:number) {
         ReqPryVar = ReqPry
         while (Connected == 0 && ConnectingStage == 0 && (ReqPry == 1 || ReqPry == -1)) {
             flashstorage.remove("Disconnected")
