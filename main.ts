@@ -286,7 +286,7 @@ namespace SMCP {
             basic.showNumber(1)
             return
         }
-        radio.setTransmitPower(0)
+        radio.setTransmitPower(1)
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
         while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
@@ -337,7 +337,21 @@ namespace SMCP {
             `)
         radio.setTransmitPower(0)
         basic.pause(1000)
+        basic.showLeds(`
+            # . . . #
+            . . . . .
+            . . . . .
+            . . . . .
+            # . . . #
+            `)
         LastConnection = input.runningTime()
+    }
+
+    //% blockId=melody_on_event block="music on %value"
+    //% help=music/on-event weight=59 blockGap=32
+    //% group="Melody Advanced"
+    export function onEvent(value: MusicEvent, handler: () => void) {
+        control.onEvent(1, value, handler);
     }
 
 }
