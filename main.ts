@@ -1,3 +1,4 @@
+//% weight=100 color=#0fbc11 icon="\uf1eb"
 namespace SMCP {
     export enum RadioMessage {
         ImHere = 59049,
@@ -272,7 +273,7 @@ namespace SMCP {
             if ((ConnectingStage == 4 && Started)) {
                 if (LastConnection + (disconnect !== undefined ? disconnect : 5000) < input.runningTime()) {
                     ConnectingAttReset()
-                } else if (LastConnection + (beep !== undefined ? beep : 1000) < input.runningTime()) {
+                } else if (LastConnection + beep < input.runningTime()) {
                     music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                 }
             }
@@ -283,8 +284,8 @@ namespace SMCP {
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry?:number) {
-        ReqPryVar = (ReqPry !== undefined ? ReqPry : 5000)
-        while (Connected == 0 && ConnectingStage == 0 && (ReqPryVar == 1 || ReqPryVar == -1)) {
+        ReqPryVar = ReqPry
+        while (Connected == 0 && ConnectingStage == 0 && (ReqPry == 1 || ReqPry == -1)) {
             flashstorage.remove("Disconnected")
             radio.sendMessage(RadioMessage.AnyOneThere)
             basic.showLeds(`
