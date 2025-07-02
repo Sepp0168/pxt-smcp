@@ -169,6 +169,7 @@ namespace SMCP {
     //% group.defl=1
     //% group.min=1 group.max=255
     //% AB.defl=false
+    //% group="first steps"
     export function init(group?:number, AB?:boolean) {
         LastConnection = 0
         Pic = []
@@ -266,6 +267,7 @@ namespace SMCP {
     //% beep.min=1000 beep.max=disconnect
     //% disconnect.defl=5000
     //% disconnect.min=beep disconnect.max=10000
+    //% group="connection"
     export function check(beep?:number, disconnect?:number) {
         if (Connected == 1) {
             if (ComPry == 1) {
@@ -285,6 +287,7 @@ namespace SMCP {
     //% blockId="connect" block="connect to other microbit|| Communication priority for this device is $ReqPry" blockExternalInputs=true
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
+    //% group="first steps"
     export function connect(ReqPry?:number) {
         if (!Started) {
             basic.showNumber(1)
@@ -353,6 +356,7 @@ namespace SMCP {
 
     //% blockId=onDisconnect block="on disconnect"
     //% weight=59 blockGap=32
+    //% group="connection"
     export function onEvent(handler: () => void) {
         control.onEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT, function () {
             basic.showLeds(`
