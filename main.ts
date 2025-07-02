@@ -208,7 +208,7 @@ namespace SMCP {
                 . # . . . . . . . .
                 # . . . . . . . . .
                 `).scrollImage(1, 100)
-            while (!(input.buttonIsPressed(Button.AB)) && (AB !== NaN ? AB : true)) {
+            while (!(input.buttonIsPressed(Button.AB)) && (AB !== undefined ? AB : true)) {
                 basic.showLeds(`
                     . . . . .
                     . . . . .
