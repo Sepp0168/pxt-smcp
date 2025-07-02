@@ -1,4 +1,3 @@
-//% weight=100 color=#0fbc11 icon="\uf1eb"
 namespace SMCP {
     export enum RadioMessage {
         ImHere = 59049,
@@ -231,6 +230,7 @@ namespace SMCP {
                 # . # . .
                 . # . . .
                 `)
+            basic.showString(AB.toString())
             Started = true
         } else {
             flashstorage.remove("Disconnected")
