@@ -162,10 +162,10 @@ namespace SMCP {
         }
     })
 
-    //% blockId="init" block="initialise smcp|| in radio group $group with AB confirmation $AB" blockExternalInputs=true
+    //% blockId="init" block="initialise smcp|| in radio group $group, do not use AB confirmation $AB" blockExternalInputs=true
     //% group.defl=1
     //% group.min=1 group.max=255
-    //% AB.defl=true
+    //% AB.defl=false
     export function init(group?:number, AB?:boolean) {
         LastConnection = 0
         Pic = []
@@ -208,7 +208,7 @@ namespace SMCP {
                 . # . . . . . . . .
                 # . . . . . . . . .
                 `).scrollImage(1, 100)
-            while (!(input.buttonIsPressed(Button.AB)) && (!AB ? true : AB)) {
+            while (!(input.buttonIsPressed(Button.AB)) && !AB) {
                 basic.showLeds(`
                     . . . . .
                     . . . . .
