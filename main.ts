@@ -179,7 +179,7 @@ namespace SMCP {
             Started = false
             Lists()
             radio.setTransmitSerialNumber(true)
-            radio.setGroup(group)
+            radio.setGroup(group || 1)
             ConnectingStage = 0
             ConnectedTo = 0
             Connected = 0
@@ -208,7 +208,7 @@ namespace SMCP {
                 . # . . . . . . . .
                 # . . . . . . . . .
                 `).scrollImage(1, 100)
-            while (!(input.buttonIsPressed(Button.AB)) && AB) {
+            while (!(input.buttonIsPressed(Button.AB)) && (AB !== undefined ? AB : true)) {
                 basic.showLeds(`
                     . . . . .
                     . . . . .
@@ -270,9 +270,9 @@ namespace SMCP {
             }
             basic.pause(500)
             if ((ConnectingStage == 4 && Started)) {
-                if (LastConnection + disconnect < input.runningTime()) {
+                if (LastConnection + (disconnect !== undefined ? disconnect : 5000) < input.runningTime()) {
                     ConnectingAttReset()
-                } else if (LastConnection + beep < input.runningTime()) {
+                } else if (LastConnection + (beep !== undefined ? beep : 1000) < input.runningTime()) {
                     music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                 }
             }
@@ -283,8 +283,8 @@ namespace SMCP {
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry?:number) {
-        ReqPryVar = ReqPry
-        while (Connected == 0 && ConnectingStage == 0 && (ReqPry == 1 || ReqPry == -1)) {
+        ReqPryVar = (ReqPry !== undefined ? ReqPry : 5000)
+        while (Connected == 0 && ConnectingStage == 0 && (ReqPryVar == 1 || ReqPryVar == -1)) {
             flashstorage.remove("Disconnected")
             radio.sendMessage(RadioMessage.AnyOneThere)
             basic.showLeds(`
