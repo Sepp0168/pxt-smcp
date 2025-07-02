@@ -347,9 +347,8 @@ namespace SMCP {
         LastConnection = input.runningTime()
     }
 
-    //% blockId=melody_on_event block="music on %value"
+    //% blockId=onDisconnect block="on disconnect"
     //% help=music/on-event weight=59 blockGap=32
-    //% group="Melody Advanced"
     export function onEvent(value: MusicEvent, handler: () => void) {
         control.onEvent(1, value, handler);
     }
