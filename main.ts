@@ -283,16 +283,36 @@ namespace SMCP {
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry?:number) {
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
-        while (Connected == 0 && ConnectingStage == 0 && (ReqPryVar == 1 || ReqPryVar == -1)) {
+        while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
-            radio.sendMessage(RadioMessage.AnyOneThere)
-            basic.showLeds(`
-                . . . . #
-                . . # . #
-                # . # . #
-                . . # . #
-                . . . . #
-                `)
+            if (ReqPryVar == 1 || ReqPryVar == -1) {
+                radio.sendMessage(RadioMessage.AnyOneThere)
+                if (ReqPryVar == 1) {
+                    basic.showLeds(`
+                        . . . . #
+                        . . # . #
+                        # . # . #
+                        . . # . #
+                        . . . . #
+                        `)
+                } else {
+                    basic.showLeds(`
+                    # . . . #
+                    # . # . #
+                    # . # . #
+                    # . # . #
+                    # . . . #
+                    `)
+                }
+            } else {
+                basic.showLeds(`
+                    # . . . .
+                    # . # . .
+                    # . # . #
+                    # . # . .
+                    # . . . .
+                    `)
+            }
             basic.pause(1000)
             LastConnection = input.runningTime()
         }
