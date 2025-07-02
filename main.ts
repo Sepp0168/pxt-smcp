@@ -162,7 +162,7 @@ namespace SMCP {
         }
     })
 
-    //% blockId="init" block="initialise smcp in group $group with AB confirmation $AB"
+    //% blockId="init" block="initialise smcp|| in radio group $group with AB confirmation $AB"
     //% group.defl=1
     //% group.min=1 group.max=255
     //% AB.defl=true
@@ -258,7 +258,7 @@ namespace SMCP {
         }
     }
 
-    //% blockId="check" block="check connection (disconnect after $disconnect ms and beep after $beep ms of no connection)"
+    //% blockId="check" block="check connection|| disconnect after $disconnect ms and beep after $beep ms of no connection"
     //% beep.defl=1000
     //% beep.min=1000 beep.max=disconnect
     //% disconnect.defl=5000
@@ -279,7 +279,7 @@ namespace SMCP {
         }
     }
 
-    //% blockId="connect" block="connect to other microbit (Communication priority for this device is $ReqPry)"
+    //% blockId="connect" block="connect to other microbit|| Communication priority for this device is $ReqPry"
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry:number) {
