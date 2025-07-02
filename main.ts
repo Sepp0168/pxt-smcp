@@ -157,7 +157,7 @@ namespace SMCP {
         Connecting(1, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 0)
     })
 
-    //% blockId="init smcp" block="init smcp"
+    //% blockId="init" block="init smcp"
     export function init() {
         LastConnection = 0
         Pic = []
@@ -250,7 +250,7 @@ namespace SMCP {
         }
     }
 
-    //% blockId="check connection" block="check connection"
+    //% blockId="check" block="check connection"
     export function check() {
         if (Connected == 1 && ComPry == 1) {
             radio.sendMessage(RadioMessage.StillThere)
