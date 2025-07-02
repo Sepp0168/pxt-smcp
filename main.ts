@@ -286,6 +286,7 @@ namespace SMCP {
             basic.showNumber(1)
             return
         }
+        radio.setTransmitPower(0)
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
         while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
@@ -334,6 +335,7 @@ namespace SMCP {
             . . . . .
             # . . . #
             `)
+        radio.setTransmitPower(0)
         basic.pause(1000)
         LastConnection = input.runningTime()
     }
