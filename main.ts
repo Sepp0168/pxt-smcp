@@ -282,6 +282,10 @@ namespace SMCP {
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry?:number) {
+        if (!Started) {
+            basic.showNumber(1)
+            return
+        }
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
         while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
