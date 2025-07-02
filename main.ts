@@ -208,7 +208,7 @@ namespace SMCP {
                 . # . . . . . . . .
                 # . . . . . . . . .
                 `).scrollImage(1, 100)
-            while (!(input.buttonIsPressed(Button.AB)) && (AB !== undefined ? AB : true)) {
+            while (!(input.buttonIsPressed(Button.AB)) && (AB ? AB : true)) {
                 basic.showLeds(`
                     . . . . .
                     . . . . .
@@ -231,7 +231,6 @@ namespace SMCP {
                 # . # . .
                 . # . . .
                 `)
-            console.log(AB)
             Started = true
         } else {
             flashstorage.remove("Disconnected")
