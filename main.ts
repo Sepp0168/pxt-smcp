@@ -162,7 +162,7 @@ namespace SMCP {
         }
     })
 
-    //% blockId="init" block="init smcp"
+    //% blockId="init" block="initialise smcp in group $group with AB confirmation $AB"
     //% group.defl=1
     //% group.min=1 group.max=255
     //% AB.defl=true
@@ -258,24 +258,28 @@ namespace SMCP {
         }
     }
 
-    //% blockId="check" block="check connection"
-    export function check() {
+    //% blockId="check" block="check connection (disconnect after $disconnect ms and beep after $beep ms of no connection)"
+    //% beep.defl=1000
+    //% beep.min=1000 beep.max=disconnect
+    //% disconnect.defl=5000
+    //% disconnect.min=beep disconnect.max=10000
+    export function check(beep:number, disconnect:number) {
         if (Connected == 1) {
             if (ComPry == 1) {
                 radio.sendMessage(RadioMessage.StillThere)
             }
             basic.pause(500)
             if ((ConnectingStage == 4 && Started)) {
-                if (LastConnection + 5000 < input.runningTime()) {
+                if (LastConnection + disconnect < input.runningTime()) {
                     ConnectingAttReset()
-                } else if (LastConnection + 1000 < input.runningTime()) {
+                } else if (LastConnection + beep < input.runningTime()) {
                     music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                 }
             }
         }
     }
 
-    //% blockId="connect" block="connect"
+    //% blockId="connect" block="connect to other microbit (Communication priority for this device is $ReqPry)"
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     export function connect(ReqPry:number) {
