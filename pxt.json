@@ -6,7 +6,7 @@
         "radio": "*",
         "microphone": "*",
         "radio-broadcast": "*",
-        "microbit-pxt-flashstorage": "github:bsiever/microbit-pxt-flashstorage#v0.1.4"
+        "microbit-pxt-flashstorage": "github:bsiever/microbit-pxt-flashstorage#v0.1.8"
     },
     "files": [
         "main.blocks",
