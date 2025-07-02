@@ -13,8 +13,8 @@ namespace SMCP {
     }
 
     const DISCONNECT_EVENT= 1234
+    const CONNECT_EVENT = 4321
     const SYSTEM_ACTIEF_EVENT = 1
-
 
     let LastConnection = 0
     let Pic: Image[] = []
@@ -342,7 +342,7 @@ namespace SMCP {
             . . . . .
             # . . . #
             `)
-        radio.setTransmitPower(0)
+        radio.setTransmitPower(7)
         basic.pause(1000)
         basic.showLeds(`
             # . . . #
@@ -351,13 +351,14 @@ namespace SMCP {
             . . . . .
             # . . . #
             `)
+        control.raiseEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
         LastConnection = input.runningTime()
     }
 
     //% blockId=onDisconnect block="on disconnect"
     //% weight=59 blockGap=32
     //% group="connection"
-    export function onEvent(handler: () => void) {
+    export function onDisconnect(handler: () => void) {
         control.onEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT, function () {
             basic.showLeds(`
             # # # # #
@@ -373,6 +374,13 @@ namespace SMCP {
             flashstorage.put("Disconnected", "1")
             control.reset()
         })
+    }
+
+    //% blockId=onConnect block="on connection"
+    //% weight=59 blockGap=32
+    //% group="connection"
+    export function onConnect(handler: () => void) {
+        control.onEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
 }
