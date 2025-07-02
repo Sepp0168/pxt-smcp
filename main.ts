@@ -12,6 +12,10 @@ namespace SMCP {
         message1 = 49434
     }
 
+    const DISCONNECT_EVENT= 1234
+    const SYSTEM_ACTIEF_EVENT = 1
+
+
     let LastConnection = 0
     let Pic: Image[] = []
     let MSG: number[] = []
@@ -270,7 +274,7 @@ namespace SMCP {
             basic.pause(500)
             if ((ConnectingStage == 4 && Started)) {
                 if (LastConnection + (isNaN(disconnect) ? 5000 : disconnect) < input.runningTime()) {
-                    ConnectingAttReset()
+                    control.raiseEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
                 } else if (LastConnection + (isNaN(beep) ? 5000 : beep) < input.runningTime()) {
                     music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                 }
@@ -348,9 +352,23 @@ namespace SMCP {
     }
 
     //% blockId=onDisconnect block="on disconnect"
-    //% help=music/on-event weight=59 blockGap=32
-    export function onEvent(value: MusicEvent, handler: () => void) {
-        control.onEvent(1, value, handler);
+    //% weight=59 blockGap=32
+    export function onEvent(handler: () => void) {
+        control.onEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT, function () {
+            basic.showLeds(`
+            # # # # #
+            . # . # .
+            . # . # .
+            . # . # .
+            # # # # #
+            `)
+            music._playDefaultBackground(music.builtInPlayableMelody(Melodies.PowerDown), music.PlaybackMode.UntilDone)
+            
+            handler()
+
+            flashstorage.put("Disconnected", "1")
+            control.reset()
+        })
     }
 
 }
