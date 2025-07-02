@@ -20,6 +20,7 @@ namespace SMCP {
     let ConnectedTo = -1
     let ConnectingStage = -1
     let Started = false
+    let ReqPryVar = -1
 
     function ConnectingAttReset() {
         basic.showLeds(`
@@ -99,7 +100,9 @@ namespace SMCP {
         Connecting(3, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 4)
     })
     radio.onReceivedMessage(RadioMessage.ImHere, function () {
-        Connecting(1, 1, radio.receivedPacket(RadioPacketProperty.SerialNumber), 1)
+        if (ReqPryVar == 1 || ReqPryVar == -1) {
+            Connecting(1, 1, radio.receivedPacket(RadioPacketProperty.SerialNumber), 1)
+        }
     })
     radio.onReceivedMessage(RadioMessage.StillThere, function () {
         Connected = 1
@@ -154,11 +157,16 @@ namespace SMCP {
         Connecting(2, 1, radio.receivedPacket(RadioPacketProperty.SerialNumber), 3)
     })
     radio.onReceivedMessage(RadioMessage.AnyOneThere, function () {
-        Connecting(1, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 0)
+        if (ReqPryVar == 0 || ReqPryVar == -1) {
+            Connecting(1, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 0)
+        }
     })
 
     //% blockId="init" block="init smcp"
-    export function init() {
+    //% group.defl=1
+    //% group.min=1 group.max=255
+    //% AB.defl=true
+    export function init(group:number, AB:boolean) {
         LastConnection = 0
         Pic = []
         MSG = []
@@ -171,7 +179,7 @@ namespace SMCP {
             Started = false
             Lists()
             radio.setTransmitSerialNumber(true)
-            radio.setGroup(1)
+            radio.setGroup(group)
             ConnectingStage = 0
             ConnectedTo = 0
             Connected = 0
@@ -200,7 +208,7 @@ namespace SMCP {
                 . # . . . . . . . .
                 # . . . . . . . . .
                 `).scrollImage(1, 100)
-            while (!(input.buttonIsPressed(Button.AB))) {
+            while (!(input.buttonIsPressed(Button.AB)) && AB) {
                 basic.showLeds(`
                     . . . . .
                     . . . . .
@@ -252,22 +260,27 @@ namespace SMCP {
 
     //% blockId="check" block="check connection"
     export function check() {
-        if (Connected == 1 && ComPry == 1) {
-            radio.sendMessage(RadioMessage.StillThere)
-        }
-        basic.pause(500)
-        if (Connected == 1 && (ConnectingStage == 4 && Started)) {
-            if (LastConnection + 5000 < input.runningTime()) {
-                ConnectingAttReset()
-            } else if (LastConnection + 1000 < input.runningTime()) {
-                music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+        if (Connected == 1) {
+            if (ComPry == 1) {
+                radio.sendMessage(RadioMessage.StillThere)
+            }
+            basic.pause(500)
+            if ((ConnectingStage == 4 && Started)) {
+                if (LastConnection + 5000 < input.runningTime()) {
+                    ConnectingAttReset()
+                } else if (LastConnection + 1000 < input.runningTime()) {
+                    music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+                }
             }
         }
     }
 
     //% blockId="connect" block="connect"
-    export function connect() {
-        while (Connected == 0 && ConnectingStage == 0) {
+    //% ReqPry.defl=-1
+    //% ReqPry.min=-1 ReqPry.max=1
+    export function connect(ReqPry:number) {
+        ReqPryVar = ReqPry
+        while (Connected == 0 && ConnectingStage == 0 && (ReqPry == 1 || ReqPry == -1)) {
             flashstorage.remove("Disconnected")
             radio.sendMessage(RadioMessage.AnyOneThere)
             basic.showLeds(`
