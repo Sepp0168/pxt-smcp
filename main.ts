@@ -457,7 +457,7 @@ namespace SMCP {
         control.onEvent(event, SYSTEM_ACTIEF_EVENT, handler)
     }
 
-    //% blockId=received block="when $event is received"
+    //% blockId=received block="when $number is received"
     //% weight=59 blockGap=32
     //% number.defl=1
     //% group="messages"
