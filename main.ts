@@ -369,7 +369,6 @@ namespace SMCP {
     }
 
     //% blockId=resetVar block="reset variables for new connection"
-    //% weight=59 blockGap=32
     //% group="connection"
     export function resetVar() {
         LastConnection = 0
@@ -381,6 +380,16 @@ namespace SMCP {
         ConnectingStage = 0
         Started = false
         Lists()
+    }
+
+    //% blockId=getComPry block="has communication priority"
+    //% group="connection"
+    export function getComPry() {
+        if (ComPry == 1) {
+            return true
+        } else {
+            return false
+        }
     }
 
     //% blockId=onDisconnect block="when microbit has disconnected"
