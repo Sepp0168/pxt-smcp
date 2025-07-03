@@ -352,6 +352,7 @@ namespace SMCP {
             # . . . #
             `)
         control.raiseEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
+        radio.setTransmitPower(7)
         LastConnection = input.runningTime()
     }
 
