@@ -188,7 +188,7 @@ namespace SMCP {
         ConnectedTo = 0
         ConnectingStage = 0
         Started = false
-        if (true) {
+        if (flashstorage.getOrDefault("Disconnected", "0") == "0") {
             Started = false
             Lists()
             radio.setTransmitSerialNumber(true)
@@ -245,7 +245,30 @@ namespace SMCP {
                 . # . . .
                 `)
             Started = true
-        } 
+        } else {
+            flashstorage.remove("Disconnected")
+            flashstorage.put("Disconnected", "0")
+            ConnectingStage = 0
+            ConnectedTo = 0
+            Connected = 0
+            ComPry = 0
+            radio.setTransmitSerialNumber(true)
+            radio.setGroup(1)
+            Lists()
+            basic.showLeds(`
+                # . . . #
+                . # . # .
+                . . # . .
+                . # . # .
+                # . . . #
+                `)
+            basic.pause(1000)
+            if (input.buttonIsPressed(Button.AB)) {
+                flashstorage.remove("Disconnected")
+                control.reset()
+            }
+            Started = true
+        }
     }
 
     //% blockId="check" block="check connection|| disconnect after $disconnect ms and send distress after $beep ms of no connection" blockExternalInputs=true
