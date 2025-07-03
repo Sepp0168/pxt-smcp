@@ -343,6 +343,7 @@ namespace SMCP {
             basic.showNumber(1)
             return
         }
+        basic.showNumber(FarConnectMode ? 1 : 7)
         radio.setTransmitPower(FarConnectMode ? 1 : 7)
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
         while (Connected == 0 && ConnectingStage == 0) {
