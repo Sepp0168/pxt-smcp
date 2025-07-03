@@ -1,4 +1,4 @@
-//% weight=100 color=#0fbc11 icon="\uf1eb"
+//% weight=100 color=#397057 icon="\uf086 "
 namespace SMCP {
     export enum RadioMessage {
         ImHere = 59049,
@@ -250,9 +250,7 @@ namespace SMCP {
             ConnectedTo = 0
             Connected = 0
             ComPry = -1
-            if (true) {
-                music._playDefaultBackground(music.builtInPlayableMelody(Melodies.Ringtone), music.PlaybackMode.InBackground)
-            }
+            music._playDefaultBackground(music.builtInPlayableMelody(Melodies.Ringtone), music.PlaybackMode.InBackground)
             images.createBigImage(`
                 # # # . # . . . # .
                 # . . . # # . # # .
