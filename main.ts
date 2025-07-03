@@ -30,11 +30,11 @@ namespace SMCP {
     }
 
     export enum CommunicationPriorityTypes {
-        //% block="first sender"
+        //% block="send first"
         FirstSender = 1,
-        //% block="first receiver"
+        //% block="receiver first"
         FirstReceiver = 0,
-        //% block="none"
+        //% block="send or receive first"
         None = -1
     }
 
@@ -333,7 +333,7 @@ namespace SMCP {
      * When initialise is not run, it will display error number 1
      * @param ReqPry if it should be first sender (1), first receiver (0) or none (-1)
      */
-    //% blockId="connect" block="connect to other microbit|| Communication priority for this device is $ReqPry" blockExternalInputs=true
+    //% blockId="connect" block="connect to other microbit|| this device must be $ReqPry" blockExternalInputs=true
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
     //% group="first steps"
