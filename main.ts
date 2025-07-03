@@ -15,6 +15,7 @@ namespace SMCP {
     const DISCONNECT_EVENT= 1234
     const CONNECT_EVENT = 4321
     const DISTRESS_SIGNAL = 1423
+    const RECONNECTION_EVENT = 1243
     const SYSTEM_ACTIEF_EVENT = 1
 
     let LastConnection = 0
@@ -26,6 +27,7 @@ namespace SMCP {
     let ConnectingStage = -1
     let Started = false
     let ReqPryVar = -1
+    let reconnect = -1
 
     function ConnectingAttReset() {
         basic.showLeds(`
@@ -98,6 +100,9 @@ namespace SMCP {
         LastConnection = input.runningTime()
         ConnectingStage = 4
         Connected = 1
+        if (reconnect == 0) {
+            reconnect = 1
+        }
     })
     radio.onReceivedMessage(RadioMessage.Done, function () {
         Connected = 1
@@ -117,6 +122,9 @@ namespace SMCP {
             ConnectingStage = 4
             Connected = 1
             ComPry = 0
+            if (reconnect == 0) {
+                reconnect = 1
+            }
         }
     })
     function Connecting(NextCS: number, CP: number, CN: number, Radio: number) {
@@ -279,7 +287,10 @@ namespace SMCP {
                 if (LastConnection + (isNaN(disconnect) ? 5000 : disconnect) < input.runningTime()) {
                     control.raiseEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
                 } else if (LastConnection + (isNaN(beep) ? 1000 : beep) < input.runningTime()) {
+                    reconnect = 0
                     control.raiseEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT)
+                } else if (reconnect == 1) {
+                    control.raiseEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT)
                 }
             }
         }
@@ -357,7 +368,7 @@ namespace SMCP {
         LastConnection = input.runningTime()
     }
 
-    //% blockId=onDisconnect block="on disconnect"
+    //% blockId=onDisconnect block="when microbit has disconnected"
     //% weight=59 blockGap=32
     //% group="connection"
     export function onDisconnect(handler: () => void) {
@@ -378,18 +389,25 @@ namespace SMCP {
         })
     }
 
-    //% blockId=onConnect block="on connection"
+    //% blockId=onConnect block="when microbit has made a connection"
     //% weight=59 blockGap=32
     //% group="connection"
     export function onConnect(handler: () => void) {
         control.onEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
-    //% blockId=onDistressSignal block="on distress signal"
+    //% blockId=onDistressSignal block="when distress signal is send"
     //% weight=59 blockGap=32
     //% group="connection"
     export function onDistressSignal(handler: () => void) {
         control.onEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT, handler)
+    }
+
+    //% blockId=onReconnection block="when microbit has regain connection"
+    //% weight=59 blockGap=32
+    //% group="connection"
+    export function onReconnection(handler: () => void) {
+        control.onEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
 }
