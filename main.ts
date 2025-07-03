@@ -173,7 +173,12 @@ namespace SMCP {
             Connecting(1, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 0)
         }
     })
-
+    /**
+     * The setup for the simple microbit communication protocol
+     * If not run, it will display error number 1
+     * @param group the radio group id to connect to
+     * @param AB if it should display the A+B confirmation
+     */
     //% blockId="init" block="initialise smcp|| in radio group $group do not use AB confirmation $AB" blockExternalInputs=true
     //% group.defl=1
     //% group.min=1 group.max=255
@@ -270,14 +275,19 @@ namespace SMCP {
             Started = true
         }
     }
-
-    //% blockId="check" block="check connection|| disconnect after $disconnect ms and send distress after $beep ms of no connection" blockExternalInputs=true
-    //% beep.defl=1000
-    //% beep.min=1000 beep.max=disconnect
+    /**
+     * Will send check signal to check if it is still connected
+     * When it does not receive anything back for a certain amount of time, it will send the disconnect signal or the distress signal
+     * @param disconnect amount of ms without connection for it to send disconnect signal
+     * @param distress amount of ms without connection for it to send distress signal
+     */
+    //% blockId="check" block="check connection|| disconnect after $disconnect ms and send distress after $distress ms of no connection" blockExternalInputs=true
+    //% distress.defl=1000
+    //% distress.min=1000 beep.max=disconnect
     //% disconnect.defl=5000
-    //% disconnect.min=beep disconnect.max=10000
+    //% disconnect.min=distress disconnect.max=10000
     //% group="connection"
-    export function check(beep?:number, disconnect?:number) {
+    export function check(disconnect?: number, distress?:number) {
         if (Connected == 1) {
             if (ComPry == 1) {
                 radio.sendMessage(RadioMessage.StillThere)
@@ -287,7 +297,7 @@ namespace SMCP {
                 if (LastConnection + (isNaN(disconnect) ? 5000 : disconnect) < input.runningTime()) {
                     Started = false
                     control.raiseEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
-                } else if (LastConnection + (isNaN(beep) ? 1000 : beep) < input.runningTime()) {
+                } else if (LastConnection + (isNaN(distress) ? 1000 : distress) < input.runningTime()) {
                     reconnect = 0
                     control.raiseEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT)
                 } else if (reconnect == 1) {
@@ -296,10 +306,16 @@ namespace SMCP {
             }
         }
     }
-
+    /**
+     * Will connect to other microbit if also it is also in connect mode
+     * When initialise is not run, it will display error number 1
+     * @param ReqPry if it should be first sender (1), first receiver (0) or none (-1)
+     */
     //% blockId="connect" block="connect to other microbit|| Communication priority for this device is $ReqPry" blockExternalInputs=true
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
+    //% ReqPry.fieldEditor="numberdropdown" ReqPry.fieldOptions.decompileLiterals=true
+    //% ReqPry.fieldOptions.data='[["first sender", 1], ["first receiver", 0], ["none", -1]]'
     //% group="first steps"
     export function connect(ReqPry?:number) {
         if (!Started) {
