@@ -198,8 +198,17 @@ namespace SMCP {
     })
 
     radio.onReceivedNumber(function (receivedNumber) {
-        control.raiseEvent(NUMBER_REC, receivedNumber)
+        if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
+            control.raiseEvent(NUMBER_REC, receivedNumber)
+        }
     })
+
+    //% blockId="init" block="Send number $int to other microbit"
+    //% int.defl=1
+    //% int.min=-99999999 number.max=99999999
+    export function sendInt(int:number) {
+        radio.sendNumber(int)
+    }
 
     /**
      * The setup for the simple microbit communication protocol
