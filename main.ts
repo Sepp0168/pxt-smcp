@@ -39,6 +39,15 @@ namespace SMCP {
         None = -1
     }
 
+    export enum comPryNeedVal {
+        //% block="only run if microbit has communication priority"
+        HasComPry = 1,
+        //% block="only run if microbit does not have communication priority"
+        NoHasComPry = 0,
+        //% block="always run when received"
+        Always = -1
+    }
+
     let LastConnection = 0
     let Pic: Image[] = []
     let MSG: number[] = []
@@ -467,11 +476,14 @@ namespace SMCP {
         control.onEvent(event, SYSTEM_ACTIEF_EVENT, handler)
     }
 
-    //% blockId=received block="when $number is received"
+    //% blockId=received block="when $number is received|| $ComPryNeed "
     //% weight=59 blockGap=32
-    //% number.defl=1
+    //% int.defl=1
     //% group="messages"
-    export function received(number: number, handler: () => void) {
-        control.onEvent(NUMBER_REC, number, handler)
+    export function received(int: number, ComPryNeed: comPryNeedVal,handler: () => void) {
+        ComPryNeed = (isNaN(ComPryNeed) ? -1 : ComPryNeed)
+        if (ComPryNeed == ComPry || ComPryNeed == -1) {
+            control.onEvent(NUMBER_REC, int, handler)
+        }
     }
 }
