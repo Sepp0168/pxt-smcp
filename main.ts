@@ -206,6 +206,7 @@ namespace SMCP {
     //% blockId="init" block="Send number $int to other microbit"
     //% int.defl=1
     //% int.min=-99999999 number.max=99999999
+    //% group="messages"
     export function sendInt(int:number) {
         radio.sendNumber(int)
     }
