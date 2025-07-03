@@ -17,6 +17,7 @@ namespace SMCP {
     const DISTRESS_SIGNAL = 1423
     const RECONNECTION_EVENT = 1243
     const SYSTEM_ACTIEF_EVENT = 1
+    const NUMBER_REC = 4231
 
     export enum EventFlags {
         //% block="microbit has disconnected"
@@ -195,6 +196,11 @@ namespace SMCP {
             Connecting(1, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 0)
         }
     })
+
+    radio.onReceivedNumber(function (receivedNumber) {
+        control.raiseEvent(NUMBER_REC, receivedNumber)
+    })
+
     /**
      * The setup for the simple microbit communication protocol
      * If not run, it will display error number 1
@@ -449,5 +455,13 @@ namespace SMCP {
     //% group="connection"
     export function onEvent(event:EventFlags,handler: () => void) {
         control.onEvent(event, SYSTEM_ACTIEF_EVENT, handler)
+    }
+
+    //% blockId=received block="when $event is received"
+    //% weight=59 blockGap=32
+    //% number.defl=1
+    //% group="messages"
+    export function received(number: number, handler: () => void) {
+        control.onEvent(NUMBER_REC, number, handler)
     }
 }
