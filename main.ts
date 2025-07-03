@@ -182,6 +182,7 @@ namespace SMCP {
     //% blockId="init" block="initialise smcp|| in radio group $group do not use AB confirmation $AB" blockExternalInputs=true
     //% group.defl=1
     //% group.min=1 group.max=255
+    //% AB.shadow=toggleOnOff
     //% AB.defl=false
     //% group="first steps"
     export function init(group?:number, AB?:boolean) {
