@@ -33,7 +33,7 @@ namespace SMCP {
     export enum CommunicationPriorityTypes {
         //% block="send first"
         FirstSender = 1,
-        //% block="receiver first"
+        //% block="receive first"
         FirstReceiver = 0,
         //% block="send or receive first"
         None = -1
