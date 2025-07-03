@@ -333,16 +333,17 @@ namespace SMCP {
      * When initialise is not run, it will display error number 1
      * @param ReqPry if it should be first sender (1), first receiver (0) or none (-1)
      */
-    //% blockId="connect" block="connect to other microbit|| this device must be $ReqPry" blockExternalInputs=true
+    //% blockId="connect" block="connect to other microbit|| connect from far away $FarConnectMode this device must $ReqPry" icon = "\uf080" blockExternalInputs=true
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
+    //% FarConnectMode.shadow=toggleOnOff
     //% group="first steps"
-    export function connect(ReqPry?: CommunicationPriorityTypes) {
+    export function connect(FarConnectMode:boolean, ReqPry?: CommunicationPriorityTypes) {
         if (!Started) {
             basic.showNumber(1)
             return
         }
-        radio.setTransmitPower(1)
+        radio.setTransmitPower(FarConnectMode ? 1 : 7)
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
         while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
