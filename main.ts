@@ -179,7 +179,7 @@ namespace SMCP {
      * @param group the radio group id to connect to
      * @param AB if it should display the A+B confirmation
      */
-    //% blockId="init" block="initialise smcp|| in radio group $group do not use AB confirmation $AB" blockExternalInputs=true
+    //% blockId="init" block="initialise smcp|| in radio group $group do not use AB confirmation $AB" icon="\uf080" blockExternalInputs=true
     //% group.defl=1
     //% group.min=1 group.max=255
     //% AB.shadow=toggleOnOff
