@@ -410,6 +410,16 @@ namespace SMCP {
         }
     }
 
+    //% blockId=connected block="connected"
+    //% group="connection"
+    export function connected() {
+        if (Connected == 1) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     //% blockId=onDisconnect block="when microbit has disconnected"
     //% weight=59 blockGap=32
     //% group="connection"
