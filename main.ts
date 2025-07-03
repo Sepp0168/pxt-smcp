@@ -168,10 +168,10 @@ namespace SMCP {
             }
             if (ConnectingStage == NextCS) {
                 music.play(music.tonePlayable(494, music.beat(BeatFraction.Double)), music.PlaybackMode.InBackground)
-                for (let index = 0; index <= 5; index++) {
+                for (let index = 0; index <= (NextCS == 1 ? 1 : 5); index++) {
                     basic.showNumber(index)
                     basic.pause(200)
-                    if (index == 5 && ConnectingStage == NextCS) {
+                    if (index == (NextCS == 1 ? 1 : 5) && ConnectingStage == NextCS) {
                         ConnectingAttReset()
                     }
                     if (Connected == 0 && ConnectingStage == NextCS) {
