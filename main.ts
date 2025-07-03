@@ -285,6 +285,7 @@ namespace SMCP {
             basic.pause(500)
             if ((ConnectingStage == 4 && Started)) {
                 if (LastConnection + (isNaN(disconnect) ? 5000 : disconnect) < input.runningTime()) {
+                    Started = false
                     control.raiseEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
                 } else if (LastConnection + (isNaN(beep) ? 1000 : beep) < input.runningTime()) {
                     reconnect = 0
@@ -378,7 +379,7 @@ namespace SMCP {
         Connected = 0
         ConnectedTo = 0
         ConnectingStage = 0
-        Started = false
+        Started = true
         Lists()
     }
 
