@@ -476,12 +476,12 @@ namespace SMCP {
         control.onEvent(event, SYSTEM_ACTIEF_EVENT, handler)
     }
 
-    //% blockId=received block="when $int is received|| $ComPryNeed "
+    //% blockId=received block="when $int is received $ComPryNeed" blockExternalInputs=true
     //% weight=59 blockGap=32
-    //% ComPryNeed.defl=Always
+    //% ComPryNeed.defl=-1
     //% int.defl=1
     //% group="messages"
-    export function received(int: number, handler: any, ComPryNeed?: comPryNeedVal ) {
+    export function received(int: number, ComPryNeed: comPryNeedVal, handler: () => void ) {
         ComPryNeed = (isNaN(ComPryNeed) ? -1 : ComPryNeed)
         if (ComPryNeed == ComPry || ComPryNeed == -1) {
             control.onEvent(NUMBER_REC, int, handler)
