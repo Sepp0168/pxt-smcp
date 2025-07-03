@@ -18,8 +18,6 @@ namespace SMCP {
     const RECONNECTION_EVENT = 1243
     const SYSTEM_ACTIEF_EVENT = 1
 
-    //% blockCombine
-    //% hidden
     export enum EventFlags {
         //% block="microbit has disconnected"
         DISCONNECT_EVENT = 1234,
