@@ -18,6 +18,13 @@ namespace SMCP {
     const RECONNECTION_EVENT = 1243
     const SYSTEM_ACTIEF_EVENT = 1
 
+    export enum EventFlags {
+        DISCONNECT_EVENT = 1234,
+        CONNECT_EVENT = 4321,
+        DISTRESS_SIGNAL = 1423,
+        RECONNECTION_EVENT = 1243
+    }
+
     let LastConnection = 0
     let Pic: Image[] = []
     let MSG: number[] = []
@@ -302,6 +309,7 @@ namespace SMCP {
                     reconnect = 0
                     control.raiseEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT)
                 } else if (reconnect == 1) {
+                    reconnect = -1
                     control.raiseEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT)
                 }
             }
@@ -448,4 +456,12 @@ namespace SMCP {
         control.onEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
+    //% blockId=onReconnection block="when $event"
+    //% weight=59 blockGap=32
+    //% event.fieldEditor="numberdropdown" event.fieldOptions.decompileLiterals=true
+    //% event.fieldOptions.data='[["microbit has disconnected", DISCONNECT_EVENT], ["microbit has made a connection", CONNECT_EVENT], ["distress signal is send", DISTRESS_SIGNAL], ["microbit has regain connection", RECONNECTION_EVENT]]'
+    //% group="connection"
+    export function onEvent(event:EventFlags,handler: () => void) {
+        control.onEvent(event, SYSTEM_ACTIEF_EVENT, handler)
+    }
 }
