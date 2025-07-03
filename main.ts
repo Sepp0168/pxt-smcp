@@ -29,6 +29,14 @@ namespace SMCP {
         RECONNECTION_EVENT = 1243
     }
 
+    export enum CommunicationPriorityTypes {
+        //% block="first sender"
+        FirstSender = 1,
+        //% block="first receiver"
+        FirstReceiver = 0,
+        //% block="none"
+        None = -1
+    }
 
     let LastConnection = 0
     let Pic: Image[] = []
@@ -328,10 +336,8 @@ namespace SMCP {
     //% blockId="connect" block="connect to other microbit|| Communication priority for this device is $ReqPry" blockExternalInputs=true
     //% ReqPry.defl=-1
     //% ReqPry.min=-1 ReqPry.max=1
-    //% ReqPry.fieldEditor="numberdropdown" ReqPry.fieldOptions.decompileLiterals=true
-    //% ReqPry.fieldOptions.data='[["first sender", 1], ["first receiver", 0], ["none", -1]]'
     //% group="first steps"
-    export function connect(ReqPry?:number) {
+    export function connect(ReqPry?: CommunicationPriorityTypes) {
         if (!Started) {
             basic.showNumber(1)
             return
@@ -431,34 +437,6 @@ namespace SMCP {
         } else {
             return false
         }
-    }
-
-    //% blockId=onDisconnect block="when microbit has disconnected"
-    //% weight=59 blockGap=32
-    //% group="connection"
-    export function onDisconnect(handler: () => void) {
-        control.onEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT, handler)
-    }
-
-    //% blockId=onConnect block="when microbit has made a connection"
-    //% weight=59 blockGap=32
-    //% group="connection"
-    export function onConnect(handler: () => void) {
-        control.onEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT, handler)
-    }
-
-    //% blockId=onDistressSignal block="when distress signal is send"
-    //% weight=59 blockGap=32
-    //% group="connection"
-    export function onDistressSignal(handler: () => void) {
-        control.onEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT, handler)
-    }
-
-    //% blockId=onReconnection block="when microbit has regain connection"
-    //% weight=59 blockGap=32
-    //% group="connection"
-    export function onReconnection(handler: () => void) {
-        control.onEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
     //% blockId=onEvent block="when $event"
