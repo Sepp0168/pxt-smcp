@@ -1,4 +1,4 @@
-//% weight=100 color=#397057 icon="\uf086"
+//% weight=100 color=##484d1b icon="\uf086"
 namespace SMCP {
     export enum RadioMessage {
         ImHere = 59049,
