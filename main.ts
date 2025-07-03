@@ -125,7 +125,6 @@ namespace SMCP {
         }
     })
     radio.onReceivedMessage(RadioMessage.Done, function () {
-        Connected = 1
         ComPry = 0
         Connecting(3, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 4)
     })
@@ -135,6 +134,9 @@ namespace SMCP {
         }
     })
     radio.onReceivedMessage(RadioMessage.StillThere, function () {
+        if (ConnectingStage == 3) {
+            Connected = 1
+        }
         if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber) && Connected == 1) {
             radio.sendMessage(RadioMessage.Yup)
             ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
