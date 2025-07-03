@@ -456,7 +456,7 @@ namespace SMCP {
         control.onEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
-    //% blockId=onReconnection block="when $event"
+    //% blockId=onEvent block="when $event"
     //% weight=59 blockGap=32
     //% event.fieldEditor="numberdropdown" event.fieldOptions.decompileLiterals=true
     //% event.fieldOptions.data='[["microbit has disconnected", 1243], ["microbit has made a connection", 4321], ["distress signal is send", 1423], ["microbit has regain connection", 1243]]'
