@@ -480,7 +480,7 @@ namespace SMCP {
     //% weight=59 blockGap=32
     //% int.defl=1
     //% group="messages"
-    export function received(int: number, ComPryNeed: comPryNeedVal,handler: () => void) {
+    export function received(int: number, handler: () => void, ComPryNeed?: comPryNeedVal) {
         ComPryNeed = (isNaN(ComPryNeed) ? -1 : ComPryNeed)
         if (ComPryNeed == ComPry || ComPryNeed == -1) {
             control.onEvent(NUMBER_REC, int, handler)
