@@ -371,7 +371,6 @@ namespace SMCP {
             basic.showNumber(1)
             return
         }
-        basic.showNumber(NearbyMode ? 0 : 7)
         radio.setTransmitPower(NearbyMode ? 0 : 7)
         ReqPryVar = (isNaN(ReqPry) ? -1 : ReqPry)
         while (Connected == 0 && ConnectingStage == 0) {
