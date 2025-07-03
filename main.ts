@@ -478,7 +478,7 @@ namespace SMCP {
 
     //% blockId=received block="when $int is received $ComPryNeed" blockExternalInputs=true
     //% weight=59 blockGap=32
-    //% ComPryNeed.defl=comPryNeedVal.Always
+    //% ComPryNeed.defl=SMCP.comPryNeedVal.Always
     //% int.defl=1
     //% group="messages"
     export function received(int: number, ComPryNeed: comPryNeedVal, handler: () => void ) {
