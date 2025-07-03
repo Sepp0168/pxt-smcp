@@ -188,7 +188,7 @@ namespace SMCP {
         ConnectedTo = 0
         ConnectingStage = 0
         Started = false
-        if (flashstorage.getOrDefault("Disconnected", "0") == "0") {
+        if (true) {
             Started = false
             Lists()
             radio.setTransmitSerialNumber(true)
@@ -245,30 +245,7 @@ namespace SMCP {
                 . # . . .
                 `)
             Started = true
-        } else {
-            flashstorage.remove("Disconnected")
-            flashstorage.put("Disconnected", "0")
-            ConnectingStage = 0
-            ConnectedTo = 0
-            Connected = 0
-            ComPry = 0
-            radio.setTransmitSerialNumber(true)
-            radio.setGroup(1)
-            Lists()
-            basic.showLeds(`
-                # . . . #
-                . # . # .
-                . . # . .
-                . # . # .
-                # . . . #
-                `)
-            basic.pause(1000)
-            if (input.buttonIsPressed(Button.AB)) {
-                flashstorage.remove("Disconnected")
-                control.reset()
-            }
-            Started = true
-        }
+        } 
     }
 
     //% blockId="check" block="check connection|| disconnect after $disconnect ms and send distress after $beep ms of no connection" blockExternalInputs=true
@@ -368,25 +345,26 @@ namespace SMCP {
         LastConnection = input.runningTime()
     }
 
+    //% blockId=resetVar block="reset variables for new connection"
+    //% weight=59 blockGap=32
+    //% group="connection"
+    export function resetVar() {
+        LastConnection = 0
+        Pic = []
+        MSG = []
+        ComPry = 0
+        Connected = 0
+        ConnectedTo = 0
+        ConnectingStage = 0
+        Started = false
+        Lists()
+    }
+
     //% blockId=onDisconnect block="when microbit has disconnected"
     //% weight=59 blockGap=32
     //% group="connection"
     export function onDisconnect(handler: () => void) {
-        control.onEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT, function () {
-            basic.showLeds(`
-            # # # # #
-            . # . # .
-            . # . # .
-            . # . # .
-            # # # # #
-            `)
-            music._playDefaultBackground(music.builtInPlayableMelody(Melodies.PowerDown), music.PlaybackMode.UntilDone)
-            
-            handler()
-
-            flashstorage.put("Disconnected", "1")
-            control.reset()
-        })
+        control.onEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT, handler)
     }
 
     //% blockId=onConnect block="when microbit has made a connection"
