@@ -14,6 +14,7 @@ namespace SMCP {
 
     const DISCONNECT_EVENT= 1234
     const CONNECT_EVENT = 4321
+    const DISTRESS_SIGNAL = 1423
     const SYSTEM_ACTIEF_EVENT = 1
 
     let LastConnection = 0
@@ -262,7 +263,7 @@ namespace SMCP {
         }
     }
 
-    //% blockId="check" block="check connection|| disconnect after $disconnect ms and beep after $beep ms of no connection" blockExternalInputs=true
+    //% blockId="check" block="check connection|| disconnect after $disconnect ms and send distress after $beep ms of no connection" blockExternalInputs=true
     //% beep.defl=1000
     //% beep.min=1000 beep.max=disconnect
     //% disconnect.defl=5000
@@ -277,8 +278,8 @@ namespace SMCP {
             if ((ConnectingStage == 4 && Started)) {
                 if (LastConnection + (isNaN(disconnect) ? 5000 : disconnect) < input.runningTime()) {
                     control.raiseEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
-                } else if (LastConnection + (isNaN(beep) ? 5000 : beep) < input.runningTime()) {
-                    music.play(music.tonePlayable(988, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+                } else if (LastConnection + (isNaN(beep) ? 1000 : beep) < input.runningTime()) {
+                    control.raiseEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT)
                 }
             }
         }
@@ -382,6 +383,13 @@ namespace SMCP {
     //% group="connection"
     export function onConnect(handler: () => void) {
         control.onEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT, handler)
+    }
+
+    //% blockId=onDistressSignal block="on distress signal"
+    //% weight=59 blockGap=32
+    //% group="connection"
+    export function onDistressSignal(handler: () => void) {
+        control.onEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT, handler)
     }
 
 }
