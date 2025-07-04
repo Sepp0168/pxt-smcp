@@ -62,6 +62,7 @@ namespace SMCP {
     let Started = false
     let ReqPryVar = -1
     let RCN = ""
+    let ConnectingActive = true
 
 
 
@@ -118,21 +119,6 @@ namespace SMCP {
         ]
     }
 
-    radio.onReceivedMessage(RadioMessage.Sure, function () {
-        if (ConnectingStage == 2 && ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
-            ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
-            ConnectingStage = 3
-            Connected = 1
-            ComPry = 1
-            basic.showLeds(`
-                . # . . .
-                . . . . .
-                . . . . .
-                . . . . .
-                # # # # .
-                `)
-        }
-    })
     radio.onReceivedMessage(RadioMessage.Yup, function () {
         LastConnection = input.runningTime()
         ConnectingStage = 4
@@ -141,22 +127,13 @@ namespace SMCP {
             Reconnect = 1
         }
     })
-    radio.onReceivedMessage(RadioMessage.Done, function () {
-        ComPry = 0
-        Connecting(3, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 4)
-    })
-    radio.onReceivedMessage(RadioMessage.ImHere, function () {
-        if (ReqPryVar == 1 || ReqPryVar == -1) {
-            Connecting(1, 1, radio.receivedPacket(RadioPacketProperty.SerialNumber), 1)
-        }
-    })
+    
     radio.onReceivedMessage(RadioMessage.StillThere, function () {
         if (ConnectingStage == 3) {
             Connected = 1
         }
         if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber) && Connected == 1) {
             radio.sendMessage(RadioMessage.Yup)
-            ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
             LastConnection = input.runningTime()
             ConnectingStage = 4
             Connected = 1
@@ -167,62 +144,60 @@ namespace SMCP {
         }
     })
 
+    function WaitFor(ms: number) {
+        for (let i = 0; i < (ms / 50); i++) {
+            if (!ConnectingActive) {
+                return false
+            }
+            basic.pause(50);
+        }
+        return true
+    }
+
     export function Connecting(NextCS: number, CP: number, CN: number, Radio: number) {
         if ((NextCS == 1 || ConnectedTo == CN) && (ConnectingStage == NextCS - 1 && Started)) {
             if (NextCS == 1) {
                 ComPry = CP
                 ConnectedTo = CN
             }
-            music.play(music.tonePlayable(131, music.beat(BeatFraction.Eighth)), music.PlaybackMode.InBackground)
+            music.play(music.tonePlayable(131, music.beat(BeatFraction.Whole)), music.PlaybackMode.InBackground)
             ConnectingStage = NextCS
-            Pic[NextCS - 1].showImage(0, 0)
-            led.plot(ComPry, 0)
-            basic.pause(100)
+            led.plotBarGraph((NextCS + (ComPry / 3)), 5)
             radio.sendNumber(MSG[Radio])
             if (NextCS == 3) {
-                basic.pause(5000)
+                WaitFor(5000)
             } else {
-                basic.pause(1000)
+                WaitFor(1000)
             }
-            if (ConnectingStage == NextCS) {
+            if (ConnectingStage == NextCS && ConnectingActive) {
                 music.play(music.tonePlayable(494, music.beat(BeatFraction.Double)), music.PlaybackMode.InBackground)
                 for (let index = 0; index <= (NextCS == 1 ? 1 : 5); index++) {
                     basic.showNumber(index)
-                    basic.pause(200)
-                    if (index == (NextCS == 1 ? 1 : 5) && ConnectingStage == NextCS) {
+                    WaitFor(100)
+                    if (index == (NextCS == 1 ? 1 : 5) && ConnectingStage == NextCS && ConnectingActive) {
                         ConnectingAttReset()
                     }
-                    if (Connected == 0 && ConnectingStage == NextCS) {
+                    if (Connected == 0 && ConnectingStage == NextCS && ConnectingActive) {
                         radio.sendNumber(MSG[Radio])
                         music.play(music.tonePlayable(262, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                     } else {
-                        break;
+                        return
                     }
                 }
             }
         }
     }
-    radio.onReceivedMessage(RadioMessage.RUReal, function () {
-        Connecting(2, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 2)
-    })
-    radio.onReceivedMessage(RadioMessage.AndU, function () {
-        Connecting(2, 1, radio.receivedPacket(RadioPacketProperty.SerialNumber), 3)
-    })
-    radio.onReceivedMessage(RadioMessage.AnyOneThere, function () {
-        if (ReqPryVar == 0 || ReqPryVar == -1) {
-            Connecting(1, 0, radio.receivedPacket(RadioPacketProperty.SerialNumber), 0)
-        }
-    })
 
     radio.onReceivedNumber(function (receivedNumber) {
         if (convertToText(receivedNumber).length == 9) {
-            music.play(music.tonePlayable(262, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+            ConnectingActive = false
             if (receivedNumber == 956300315) {
                 if (ConnectingStage == 2 && ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
                     ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
                     ConnectingStage = 3
                     Connected = 1
                     ComPry = 1
+                    radio.sendMessage(RadioMessage.StillThere)
                     basic.showLeds(`
                     . # . . .
                     . . . . .
@@ -232,6 +207,7 @@ namespace SMCP {
                     `)
                 }
             } else {
+                ConnectingActive = false
                 control.raiseEvent(9432, receivedNumber)
             }
         } else if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
@@ -250,10 +226,10 @@ namespace SMCP {
             let Param3 = parseInt(RCN.charAt(8));
 
             if (!isNaN(Param1) && !isNaN(Param2) && !isNaN(Param3)) {
-                Connecting(Param1, Param2, Sn, Param3);
+                Connecting(Param1, Param2, Sn, Param3)
             }
         }
-    });
+    })
 
 
     //% blockId="sendInt" block="Send number $int to other microbit"
