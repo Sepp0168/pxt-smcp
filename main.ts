@@ -47,7 +47,11 @@ namespace SMCP {
         //% block="always run when received"
         Always = -1
     }
-
+    let Reconnect = -1
+    let Sn = 0
+    let Param1 = 0
+    let Param2 = 0
+    let Param3 = 0
     let LastConnection = 0
     let Pic: Image[] = []
     let MSG: number[] = []
@@ -57,7 +61,9 @@ namespace SMCP {
     let ConnectingStage = -1
     let Started = false
     let ReqPryVar = -1
-    let reconnect = -1
+    let RCN = ""
+
+
 
     function ConnectingAttReset() {
         basic.showLeds(`
@@ -74,11 +80,11 @@ namespace SMCP {
 
     function Lists() {
         MSG = [
-            59049,
-            51673,
-            54968,
-            52625,
-            12631
+            956300111,
+            956300202,
+            956300213,
+            956300304,
+            956300315
         ]
         Pic = [
             images.createImage(`
@@ -111,6 +117,7 @@ namespace SMCP {
             `)
         ]
     }
+
     radio.onReceivedMessage(RadioMessage.Sure, function () {
         if (ConnectingStage == 2 && ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
             ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
@@ -130,8 +137,8 @@ namespace SMCP {
         LastConnection = input.runningTime()
         ConnectingStage = 4
         Connected = 1
-        if (reconnect == 0) {
-            reconnect = 1
+        if (Reconnect == 0) {
+            Reconnect = 1
         }
     })
     radio.onReceivedMessage(RadioMessage.Done, function () {
@@ -154,12 +161,13 @@ namespace SMCP {
             ConnectingStage = 4
             Connected = 1
             ComPry = 0
-            if (reconnect == 0) {
-                reconnect = 1
+            if (Reconnect == 0) {
+                Reconnect = 1
             }
         }
     })
-    function Connecting(NextCS: number, CP: number, CN: number, Radio: number) {
+
+    export function Connecting(NextCS: number, CP: number, CN: number, Radio: number) {
         if ((NextCS == 1 || ConnectedTo == CN) && (ConnectingStage == NextCS - 1 && Started)) {
             if (NextCS == 1) {
                 ComPry = CP
@@ -170,7 +178,7 @@ namespace SMCP {
             Pic[NextCS - 1].showImage(0, 0)
             led.plot(ComPry, 0)
             basic.pause(100)
-            radio.sendMessage(MSG[Radio])
+            radio.sendNumber(MSG[Radio])
             if (NextCS == 3) {
                 basic.pause(5000)
             } else {
@@ -185,7 +193,7 @@ namespace SMCP {
                         ConnectingAttReset()
                     }
                     if (Connected == 0 && ConnectingStage == NextCS) {
-                        radio.sendMessage(MSG[Radio])
+                        radio.sendNumber(MSG[Radio])
                         music.play(music.tonePlayable(262, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
                     } else {
                         break;
@@ -207,17 +215,53 @@ namespace SMCP {
     })
 
     radio.onReceivedNumber(function (receivedNumber) {
-        if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
+        if (convertToText(receivedNumber).length == 9) {
+            music.play(music.tonePlayable(262, music.beat(BeatFraction.Whole)), music.PlaybackMode.UntilDone)
+            if (receivedNumber == 956300315) {
+                if (ConnectingStage == 2 && ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
+                    ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
+                    ConnectingStage = 3
+                    Connected = 1
+                    ComPry = 1
+                    basic.showLeds(`
+                    . # . . .
+                    . . . . .
+                    . . . . .
+                    . . . . .
+                    # # # # .
+                    `)
+                }
+            } else {
+                control.raiseEvent(9432, receivedNumber)
+            }
+        } else if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
             control.raiseEvent(NUMBER_REC, receivedNumber)
         }
     })
 
+    control.onEvent(9432, EventBusValue.MICROBIT_EVT_ANY, function () {
+        let evtValue = control.eventValue();
+        let RCN = convertToText(evtValue);
+
+        if (ReqPryVar == parseInt(RCN.charAt(7)) || ReqPryVar == -1) {
+            let Sn = radio.receivedPacket(RadioPacketProperty.SerialNumber);
+            let Param1 = parseInt(RCN.charAt(6));
+            let Param2 = parseInt(RCN.charAt(7));
+            let Param3 = parseInt(RCN.charAt(8));
+
+            if (!isNaN(Param1) && !isNaN(Param2) && !isNaN(Param3)) {
+                Connecting(Param1, Param2, Sn, Param3);
+            }
+        }
+    });
+
+
     //% blockId="sendInt" block="Send number $int to other microbit"
     //% int.defl=1
-    //% int.min=-99999999 number.max=99999999
+    //% int.min=-99999999 int.max=99999999
     //% group="messages"
     export function sendInt(int:number) {
-        radio.sendNumber(int)
+        radio.sendNumber(Math.min(int, 99999999))
     }
 
     /**
@@ -344,10 +388,10 @@ namespace SMCP {
                     Started = false
                     control.raiseEvent(DISCONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
                 } else if (LastConnection + (isNaN(distress) ? 1000 : distress) < input.runningTime()) {
-                    reconnect = 0
+                    Reconnect = 0
                     control.raiseEvent(DISTRESS_SIGNAL, SYSTEM_ACTIEF_EVENT)
-                } else if (reconnect == 1) {
-                    reconnect = -1
+                } else if (Reconnect == 1) {
+                    Reconnect = -1
                     control.raiseEvent(RECONNECTION_EVENT, SYSTEM_ACTIEF_EVENT)
                 }
             }
@@ -374,7 +418,7 @@ namespace SMCP {
         while (Connected == 0 && ConnectingStage == 0) {
             flashstorage.remove("Disconnected")
             if (ReqPryVar == 1 || ReqPryVar == -1) {
-                radio.sendMessage(RadioMessage.AnyOneThere)
+                radio.sendNumber(956300100)
                 if (ReqPryVar == 1) {
                     basic.showLeds(`
                         . . . . #
