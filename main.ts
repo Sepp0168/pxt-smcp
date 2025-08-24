@@ -63,6 +63,7 @@ namespace SMCP {
     let ReqPryVar = -1
     let RCN = ""
     let ConnectingActive = true
+    let MessageR = -1
 
 
 
@@ -172,15 +173,17 @@ namespace SMCP {
                 }
             } else {
                 ConnectingActive = false
-                control.raiseEvent(9432, receivedNumber)
+                serial.writeNumber(receivedNumber)
+                MessageR = receivedNumber
+                control.raiseEvent(3489, receivedNumber)
             }
         } else if (ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
             control.raiseEvent(NUMBER_REC, receivedNumber)
         }
     })
 
-    control.onEvent(9432, EventBusValue.MICROBIT_EVT_ANY, function () {
-        let evtValue = control.eventValue();
+    control.onEvent(3489, EventBusValue.MICROBIT_EVT_ANY, function () {
+        let evtValue = MessageR
         let RCN = convertToText(evtValue);
 
         if (ReqPryVar == parseInt(RCN.charAt(7)) || ReqPryVar == -1) {
@@ -191,6 +194,9 @@ namespace SMCP {
 
             if (!isNaN(Param1) && !isNaN(Param2) && !isNaN(Param3)) {
                 Connecting(Param1, Param2, Sn, Param3)
+            } else {
+                basic.showNumber(evtValue)
+                serial.writeLine("Error")
             }
         }
     })
