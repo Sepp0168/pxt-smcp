@@ -87,36 +87,6 @@ namespace SMCP {
             956300304,
             956300315
         ]
-        Pic = [
-            images.createImage(`
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            # # . . .
-            `),
-            images.createImage(`
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            # # # . .
-            `),
-            images.createImage(`
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            # # # # .
-            `),
-            images.createImage(`
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            # # # # #
-            `)
-        ]
     }
 
     radio.onReceivedMessage(RadioMessage.Yup, function () {
@@ -163,6 +133,7 @@ namespace SMCP {
             music.play(music.tonePlayable(131, music.beat(BeatFraction.Whole)), music.PlaybackMode.InBackground)
             ConnectingStage = NextCS
             led.plotBarGraph((NextCS + (ComPry / 3)), 5)
+            basic.pause(100)
             radio.sendNumber(MSG[Radio])
             if (NextCS == 3) {
                 WaitFor(5000)
@@ -189,8 +160,8 @@ namespace SMCP {
     }
 
     radio.onReceivedNumber(function (receivedNumber) {
+        LastConnection = input.runningTime()
         if (convertToText(receivedNumber).length == 9) {
-            ConnectingActive = false
             if (receivedNumber == 956300315) {
                 if (ConnectingStage == 2 && ConnectedTo == radio.receivedPacket(RadioPacketProperty.SerialNumber)) {
                     ConnectedTo = radio.receivedPacket(RadioPacketProperty.SerialNumber)
@@ -198,13 +169,6 @@ namespace SMCP {
                     Connected = 1
                     ComPry = 1
                     radio.sendMessage(RadioMessage.StillThere)
-                    basic.showLeds(`
-                    . # . . .
-                    . . . . .
-                    . . . . .
-                    . . . . .
-                    # # # # .
-                    `)
                 }
             } else {
                 ConnectingActive = false
@@ -438,15 +402,7 @@ namespace SMCP {
             . . . . .
             # . . . #
             `)
-        radio.setTransmitPower(7)
         basic.pause(1000)
-        basic.showLeds(`
-            # . . . #
-            . . . . .
-            . . . . .
-            . . . . .
-            # . . . #
-            `)
         control.raiseEvent(CONNECT_EVENT, SYSTEM_ACTIEF_EVENT)
         radio.setTransmitPower(7)
         LastConnection = input.runningTime()
